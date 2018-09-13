@@ -7,6 +7,6 @@ namespace TYTFBackTermimalBack.DataHandle.Config
 {
     public class XConfig
     {
-        public const string MySqlConnectionString = "Database=tytfbackterminal;DataSource=65.49.210.16;User Id=root;Password=zywoaini1314;CharSet=utf8;SslMode=None;";
+        public const string MySqlConnectionString = "Database=tytfbackterminal;DataSource=65.;User Id=....;Password=...;CharSet=utf8;SslMode=None;";
     }
 }
