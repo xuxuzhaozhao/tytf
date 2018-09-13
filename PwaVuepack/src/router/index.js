@@ -11,6 +11,7 @@ import position from '@/views/position/index'
 import Login from '@/views/login/index'
 import Admin from '@/views/admin/index'
 import Chart from "@/views/charts/index";
+import MobileOrder from '@/views/mobileorder/index'
 
 Vue.use(Router)
 
@@ -20,11 +21,16 @@ const router = new Router({
             path: '/',
             name: 'Admin',
             component: Admin,
-            redirect: '/admin/order',
+            redirect: '/admin/mobileorder',
             meta: {
                 requireAuth: true
             },
             children: [
+                {
+                    path: '/admin/mobileorder',
+                    name: 'MobileOrder',
+                    component: MobileOrder
+                },
                 {
                     path: '/admin/order',
                     name: 'Order',
