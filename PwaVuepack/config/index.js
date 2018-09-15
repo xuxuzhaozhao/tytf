@@ -31,8 +31,8 @@ module.exports = {
         assetsPublicPath: '/',
         proxyTable: {
             '/api': {
-                //target: 'http://localhost:11371',
-                target: 'https://tytf.xuxuzhaozhao.top',
+                target: 'http://localhost:11371',
+                //target: 'https://tytf.xuxuzhaozhao.top',
                 changeOrigin: true,
                 pathRewrite: {
                     '^/Api': ''

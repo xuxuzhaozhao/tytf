@@ -259,9 +259,19 @@ export default {
       }
     },
 
-    printMenu(){
-        if (confirm("确认打印此菜单吗，继续?")) {
-        //TODO
+    printMenu() {
+      if (confirm("确认打印此菜单吗，继续?")) {
+        this.$http
+          .get(`${this.$domain}/api/order/printMenu/${this.orderId}`)
+          .then(res => {
+            if (res.data.code === 20000) {
+              this.color = "success";
+            } else {
+              this.color = "error";
+            }
+            this.message = res.data.message;
+            this.snackbarB = true;
+          });
       }
     }
   }

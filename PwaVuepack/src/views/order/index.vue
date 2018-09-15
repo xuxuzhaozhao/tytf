@@ -352,6 +352,7 @@ export default {
             this.desserts = res.data.data.content;
             this.totalItems = res.data.data.count;
             this.pagination.totalItems = this.totalItems;
+            console.log(this.pagination);
           } else {
             alert(res.data.message);
           }

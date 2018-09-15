@@ -112,7 +112,8 @@ export default {
     dialog: false,
     drawer: null,
     items: [
-      { icon: "keyboard", text: "订单管理", link: "/admin/order" },
+      { icon: "keyboard", text: "电脑端订单管理", link: "/admin/order" },
+      { icon: "keyboard", text: "移动端订单管理", link: "/admin/mobileorder" },
       { icon: "add", text: "餐桌位置管理", link: "/admin/position" },
       { icon: "content_copy", text: "菜品种类管理", link: "/admin/menutype" },
       { icon: "history", text: "菜品管理", link: "/admin/menu" },

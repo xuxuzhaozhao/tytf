@@ -21,7 +21,7 @@ namespace TYTFBackTermimalBack.Api
             var selectSql = $@"select * from VM_Order {page.GetWhereSql()}
                             ORDER BY {page.Sort}
                             LIMIT {(page.Page - 1) * page.RowsPerPage},{page.RowsPerPage}";
-            var countSql = $"SELECT COUNT(1) AS count FROM VM_Order";
+            var countSql = $"SELECT COUNT(1) AS count FROM VM_Order {page.GetWhereSql()}";
 
             var list = XDataHelper.ExcuteReader<object>(selectSql).ToList();
 

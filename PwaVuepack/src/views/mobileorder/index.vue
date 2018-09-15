@@ -8,7 +8,7 @@
                 vertical
             ></v-divider>
             <v-spacer></v-spacer>
-            <v-btn @click="reload">刷新页面</v-btn>
+            <v-btn @click="reload">重置查询</v-btn>
 
             <v-btn @click="openquerydialog">选择查询</v-btn>
             
@@ -128,11 +128,8 @@
                     </v-card>
                 </v-flex>
                 </v-layout>
-                <v-pagination
-                    v-model="pages"
-                    :total-visible="4"
-                    prev-icon="chevron_left"
-                    next-icon="chevron_right" />
+                <v-btn v-if="frontButton" color="primary" @click="frontPage"><v-icon>chevron_left</v-icon>上一页</v-btn>
+                <v-btn v-if="nextButton" color="primary" @click="nextPage">下一页<v-icon>chevron_right</v-icon></v-btn>
             </v-container>
             <v-btn
               fixed
@@ -153,23 +150,27 @@
         <xsnackbar :color="color" 
             :snackbar.sync="snackbarB" 
             :text="message"/>
+        <x-loading :loading='loading' />
     </div>
 </template>
 
 <script>
 import Xsnackbar from "@/components/snackbar";
 import DetailOrder from "@/views/order/detailorder/index";
+import XLoading from "@/components/loading";
 export default {
   components: {
     DetailOrder,
-    Xsnackbar
+    Xsnackbar,
+    XLoading
   },
   data() {
     return {
       loading: false,
       pagination: {
-        rowsPerPage: 20,
-        descending: true
+        rowsPerPage: 8,
+        descending: true,
+        page: 1
       },
       orderList: [],
       querydialog: false,
@@ -181,7 +182,12 @@ export default {
       message: "",
       snackbarB: "",
       color: "",
-      items: [{ text: "已买单", value: true }, { text: "未买单", value: false }]
+      items: [
+        { text: "已买单", value: true },
+        { text: "未买单", value: false }
+      ],
+      frontButton: false,
+      nextButton: false
     };
   },
   created() {
@@ -200,20 +206,36 @@ export default {
       },
       deep: true
     },
-  },
-   computed: {
-    pages() {
-      if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      )
-        return 0;
+    "pagination.page": {
+      handler() {
+        if (this.pagination.page <= 1) {
+          this.frontButton = false;
+        } else {
+          this.frontButton = true;
+        }
 
-      return Math.ceil(
-        this.pagination.totalItems / this.pagination.rowsPerPage
-      );
+        console.log(this.pagination.page, this.pages);
+        if (this.pagination.page >= this.pages) {
+          this.nextButton = false;
+        } else {
+          this.nextButton = true;
+        }
+      }
     }
   },
+  // computed: {
+  //   pages() {
+  //     if (
+  //       this.pagination.rowsPerPage == null ||
+  //       this.pagination.totalItems == null
+  //     )
+  //       return 0;
+
+  //     return Math.ceil(
+  //       this.pagination.totalItems / this.pagination.rowsPerPage
+  //     );
+  //   }
+  // },
   methods: {
     initialize() {
       this.loading = true;
@@ -222,8 +244,11 @@ export default {
         .then(res => {
           this.loading = false;
           if (res.data.code === 20000) {
+            this.returnTop();
             this.orderList = res.data.data.content;
-            this.pagination.totalItems = this.totalItems;
+            this.pagination.totalItems = res.data.data.count;
+
+            this.handlePage();
           } else {
             alert(res.data.message);
           }
@@ -231,6 +256,39 @@ export default {
         .catch(() => {
           this.loading = false;
         });
+    },
+
+    handlePage() {
+      if (
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
+      ) {
+        this.pages = 0;
+      } else {
+        this.pages = Math.ceil(
+          this.pagination.totalItems / this.pagination.rowsPerPage
+        );
+      }
+
+      if (this.pagination.page <= 1) {
+        this.frontButton = false;
+      } else {
+        this.frontButton = true;
+      }
+
+      if (this.pagination.page >= this.pages) {
+        this.nextButton = false;
+      } else {
+        this.nextButton = true;
+      }
+    },
+
+    nextPage() {
+      this.pagination.page++;
+    },
+
+    frontPage() {
+      this.pagination.page--;
     },
 
     returnTop() {
@@ -248,7 +306,8 @@ export default {
 
     reload() {
       this.pagination = {
-        rowsPerPage: 20,
+        page: 1,
+        rowsPerPage: 8,
         descending: true
       };
       this.initialize();
@@ -275,6 +334,7 @@ export default {
 
     openquerydialog() {
       this.pagination.date = null;
+      this.pagination.page = 1;
       this.pagination.date1 = null;
       this.pagination.IsBuyed = null;
       this.pagination.PositionId = null;
