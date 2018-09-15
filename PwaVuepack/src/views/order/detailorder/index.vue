@@ -33,7 +33,7 @@
           </v-card-text>
           <v-btn @click="addItemOpen"><v-icon>add</v-icon>添加菜品</v-btn>
           <v-btn @click="submitBuy" color="success">确认买单</v-btn>
-          <v-btn @click="submitBuy" color="success">确认买单</v-btn>
+          <v-btn @click="printMenu" color="primary">打印菜单</v-btn>
           <div style="flex: 1 1 auto;"></div>
         </v-card>
       </v-dialog>
@@ -256,6 +256,12 @@ export default {
             this.message = res.data.message;
             this.snackbarB = true;
           });
+      }
+    },
+
+    printMenu(){
+        if (confirm("确认打印此菜单吗，继续?")) {
+        //TODO
       }
     }
   }

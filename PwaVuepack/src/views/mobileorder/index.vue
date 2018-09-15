@@ -8,50 +8,9 @@
                 vertical
             ></v-divider>
             <v-spacer></v-spacer>
-            <v-btn @click="initialize">刷新页面</v-btn>
+            <v-btn @click="reload">刷新页面</v-btn>
 
-            <v-btn @click="initialize">选择查询</v-btn>
-            <!-- <v-dialog v-model="dialog" max-width="500px">
-                <v-card>
-                <v-card-title>
-                    <span class="headline">修改订单</span>
-                </v-card-title>
-
-                <v-card-text>
-                    <v-container grid-list-md>
-                    <v-layout wrap>
-                        <v-flex xs12 sm12 md12>
-                        <v-select :items="selectItems"
-                                    item-text="name"
-                                    item-value="id"
-                                    label="餐桌位置"
-                                    v-model="editedItem.PositionId"
-                                >
-                        </v-select>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                        <v-text-field disabled v-model="editedItem.ShouldPrice" label="应收款"></v-text-field>
-                        </v-flex>
-                        <v-flex xs12 sm12 md12>
-                        <v-select :items="items"
-                                    item-text="text"
-                                    item-value="value"
-                                    label="是否买单"
-                                    v-model="editedItem.IsBuyed"
-                                >
-                        </v-select>
-                        </v-flex>
-                    </v-layout>
-                    </v-container>
-                </v-card-text>
-
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="blue darken-1" flat @click.native="close">取消</v-btn>
-                    <v-btn color="blue darken-1" flat @click.native="save">保存</v-btn>
-                </v-card-actions>
-                </v-card>
-            </v-dialog>
+            <v-btn @click="openquerydialog">选择查询</v-btn>
             
             <v-dialog v-model="querydialog" max-width="500px">
                 <v-card>
@@ -142,7 +101,7 @@
                     <v-btn color="blue darken-1" flat @click.native="query">查询</v-btn>
                 </v-card-actions>
                 </v-card>
-            </v-dialog> -->
+            </v-dialog>
         </v-toolbar>
         <v-card>
             <v-container
@@ -150,99 +109,112 @@
                 grid-list-lg
             >
                 <v-layout row wrap>
-                <v-flex xs12 v-for="item in [1,1,1,1,1,1,1,1,11,,1,1,1,1,1]" :key="item">
-                    <v-card color="pink darken-2" class="white--text">
+                <v-flex xs12 v-for="item in orderList" :key="item.OrderId">
+                    <v-card :color="item.IsBuyed?'#56A36C':'#EF5350'" class="white--text">
                     <v-card-title primary-title>
                         <div>
-                            <div class="headline">09月13日 21:03 &nbsp;&nbsp;&nbsp; 未买单</div>
+                            <div class="headline">{{getdatetime(item.CreateTime)}} &nbsp;&nbsp; {{item.IsBuyed?'已买单':'未买单'}}</div>
                             <div> </div>
-                            <div>位置：雅1。</div>
-                            <div>应收款：<span style="font-weight:700">￥255.5</span> 元整</div>
-                            <div>服务人员：徐程意</div>
+                            <div>位置：{{item.PositionName}}。</div>
+                            <div>应收款：<span style="font-weight:700;font-size:18px;">￥{{item.ShouldPrice}}</span> 元整</div>
+                            <div>服务人员：{{item.WaiterName}}</div>
                         </div>
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="green" dark>确认买单</v-btn>
-                        <v-btn color="blue" dark>修改订单</v-btn>
-                    </v-card-actions>
-                    </v-card>
-                </v-flex>
-
-                <v-flex xs12>
-                    <v-card color="cyan darken-2" class="white--text">
-                    <v-layout>
-                        <v-flex xs5>
-                        <v-img
-                            src="https://cdn.vuetifyjs.com/images/cards/foster.jpg"
-                            height="125px"
-                            contain
-                        ></v-img>
-                        </v-flex>
-                        <v-flex xs7>
-                        <v-card-title primary-title>
-                            <div>
-                            <div class="headline">Supermodel</div>
-                            <div>Foster the People</div>
-                            <div>(2014)</div>
-                            </div>
-                        </v-card-title>
-                        </v-flex>
-                    </v-layout>
-                    <v-divider light></v-divider>
-                    <v-card-actions class="pa-3">
-                        Rate this album
-                        <v-spacer></v-spacer>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
-                    </v-card-actions>
-                    </v-card>
-                </v-flex>
-
-                <v-flex xs12>
-                    <v-card color="purple" class="white--text">
-                    <v-layout row>
-                        <v-flex xs7>
-                        <v-card-title primary-title>
-                            <div>
-                            <div class="headline">Halycon Days</div>
-                            <div>Ellie Goulding</div>
-                            <div>(2013)</div>
-                            </div>
-                        </v-card-title>
-                        </v-flex>
-                        <v-flex xs5>
-                        <v-img
-                            src="https://cdn.vuetifyjs.com/images/cards/halcyon.png"
-                            height="125px"
-                            contain
-                        ></v-img>
-                        </v-flex>
-                    </v-layout>
-                    <v-divider light></v-divider>
-                    <v-card-actions class="pa-3">
-                        Rate this album
-                        <v-spacer></v-spacer>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
-                        <v-icon>star_border</v-icon>
+                        <v-btn :color="item.IsBuyed?'#7E884F':'#56A36C'" :disabled="item.IsBuyed" dark @click="submitBuy(item)">确认买单</v-btn>
+                        <v-btn :color="item.IsBuyed?'#2E68AA':'#2E68AA'" dark @click="openItem(item.OrderId)">修改订单</v-btn>
                     </v-card-actions>
                     </v-card>
                 </v-flex>
                 </v-layout>
+                <v-pagination
+                    v-model="pages"
+                    :total-visible="4"
+                    prev-icon="chevron_left"
+                    next-icon="chevron_right" />
             </v-container>
+            <v-btn
+              fixed
+              dark
+              fab
+              bottom
+              right
+              color="primary"
+              @click="returnTop"
+            >
+              <v-icon>keyboard_arrow_up</v-icon>
+            </v-btn>
         </v-card>
+
+        <detail-order :detailDialog.sync="detailDialog"
+            :orderId="orderId"/>
+
+        <xsnackbar :color="color" 
+            :snackbar.sync="snackbarB" 
+            :text="message"/>
     </div>
 </template>
 
 <script>
+import Xsnackbar from "@/components/snackbar";
+import DetailOrder from "@/views/order/detailorder/index";
 export default {
-methods:{
+  components: {
+    DetailOrder,
+    Xsnackbar
+  },
+  data() {
+    return {
+      loading: false,
+      pagination: {
+        rowsPerPage: 20,
+        descending: true
+      },
+      orderList: [],
+      querydialog: false,
+      detailDialog: false,
+      selectItems: [],
+      menu2: false,
+      menu3: false,
+      orderId: "",
+      message: "",
+      snackbarB: "",
+      color: "",
+      items: [{ text: "已买单", value: true }, { text: "未买单", value: false }]
+    };
+  },
+  created() {
+    this.initialize();
+    this.getSelectList();
+  },
+  watch: {
+    detailDialog(val) {
+      if (!val) {
+        this.initialize();
+      }
+    },
+    pagination: {
+      handler() {
+        this.initialize();
+      },
+      deep: true
+    },
+  },
+   computed: {
+    pages() {
+      if (
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
+      )
+        return 0;
+
+      return Math.ceil(
+        this.pagination.totalItems / this.pagination.rowsPerPage
+      );
+    }
+  },
+  methods: {
     initialize() {
       this.loading = true;
       this.$http
@@ -250,8 +222,7 @@ methods:{
         .then(res => {
           this.loading = false;
           if (res.data.code === 20000) {
-            this.desserts = res.data.data.content;
-            this.totalItems = res.data.data.count;
+            this.orderList = res.data.data.content;
             this.pagination.totalItems = this.totalItems;
           } else {
             alert(res.data.message);
@@ -261,10 +232,79 @@ methods:{
           this.loading = false;
         });
     },
-}
-}
+
+    returnTop() {
+      this.scrollToTop(15); //300ms滑动到顶
+    },
+
+    scrollToTop(scrollDuration) {
+      var scrollStep = -window.scrollY / (scrollDuration / 15),
+        scrollInterval = setInterval(function() {
+          if (window.scrollY != 0) {
+            window.scrollBy(0, scrollStep);
+          } else clearInterval(scrollInterval);
+        }, 15);
+    },
+
+    reload() {
+      this.pagination = {
+        rowsPerPage: 20,
+        descending: true
+      };
+      this.initialize();
+    },
+
+    getdatetime(time) {
+      return time.slice(5);
+    },
+
+    getSelectList() {
+      this.$http
+        .get(`${this.$domain}/api/BaseTable/TablePosition/select`)
+        .then(res => {
+          if (res.data.code == 20000) {
+            this.selectItems = res.data.data;
+          }
+        });
+    },
+
+    query() {
+      this.initialize();
+      this.querydialog = false;
+    },
+
+    openquerydialog() {
+      this.pagination.date = null;
+      this.pagination.date1 = null;
+      this.pagination.IsBuyed = null;
+      this.pagination.PositionId = null;
+      this.querydialog = true;
+    },
+
+    openItem(orderId) {
+      this.orderId = orderId;
+      this.detailDialog = true;
+    },
+
+    submitBuy(item) {
+      if (confirm("不要担心买单后也能通过后台修改菜单，确定吗?")) {
+        this.$http
+          .get(`${this.$domain}/api/order/submitBuy/${item.OrderId}`)
+          .then(res => {
+            if (res.data.code === 20000) {
+              this.color = "success";
+              item.IsBuyed = true;
+            } else {
+              this.color = "error";
+            }
+            this.message = res.data.message;
+            this.snackbarB = true;
+          });
+      }
+    }
+  }
+};
 </script>
 
 <style>
-
 </style>
