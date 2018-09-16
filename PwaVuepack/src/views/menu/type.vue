@@ -86,7 +86,7 @@ export default {
       { text: "菜品种类名称", value: "Name", Sortable: false },
       { text: "排序", value: "Sort" },
       { text: "编辑", sortable: false },
-      { text: "删除", sortable: false },
+      { text: "删除", sortable: false }
     ],
     desserts: [],
     editedIndex: -1,
@@ -124,11 +124,13 @@ export default {
           if (res.data.code === 20000) {
             this.desserts = res.data.data;
           } else {
-            alert(res.data.Message);
+           this.color = "error";
+            this.message = res.data.message;
+            this.snackbarB = true;
           }
         });
     },
-    
+
     // snackbarop(){
     //   this.snackbar=
     // },
@@ -141,22 +143,26 @@ export default {
 
     deleteItem(item) {
       const index = this.desserts.indexOf(item);
-      if (confirm("确定删除此菜品种类吗?")) {
-        this.desserts.splice(index, 1);
-        this.$http
-          .delete(`${this.$domain}/api/BaseTable/MenuType/del/${item.Id}`)
-          .then(res => {
-            if (res.data.code === 20000) {
-              this.color = "success";
-            } else {
-              this.color = "error";
-            }
-            this.message = res.data.message;
-            this.snackbarB = true;
-          });
-      }
+      this.$confirm("确定删除此菜品种类吗?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回"
+      }).then(res => {
+        if (res) {
+          this.desserts.splice(index, 1);
+          this.$http
+            .delete(`${this.$domain}/api/BaseTable/MenuType/del/${item.Id}`)
+            .then(res => {
+              if (res.data.code === 20000) {
+                this.color = "success";
+              } else {
+                this.color = "error";
+              }
+              this.message = res.data.message;
+              this.snackbarB = true;
+            });
+        }
+      });
     },
-
 
     close() {
       this.dialog = false;
@@ -168,10 +174,7 @@ export default {
 
     save() {
       this.$http
-        .post(
-          `${this.$domain}/api/BaseTable/MenuType/save`,
-          this.editedItem
-        )
+        .post(`${this.$domain}/api/BaseTable/MenuType/save`, this.editedItem)
         .then(res => {
           if (res.data.code === 20000) {
             this.color = "success";

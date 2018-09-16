@@ -354,7 +354,9 @@ export default {
             this.pagination.totalItems = this.totalItems;
             console.log(this.pagination);
           } else {
-            alert(res.data.message);
+            this.color = "error";
+            this.message = res.data.message;
+            this.snackbarB = true;
           }
         })
         .catch(() => {
@@ -380,10 +382,12 @@ export default {
 
     deleteItem(item) {
       const index = this.desserts.indexOf(item);
-      if (
-        confirm("徐女士，订单删除是很危险的操作，删除了就恢复不了哦？确定？")
-      ) {
-        this.desserts.splice(index, 1);
+      this.$confirm("徐老板，订单删除是很危险的操作，删除了就恢复不了哦？确定？?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回"
+      }).then(res => {
+        if (res) {
+          this.desserts.splice(index, 1);
         this.$http
           .delete(`${this.$domain}/api/Order/DeleteOrder/${item.OrderId}`)
           .then(res => {
@@ -395,7 +399,8 @@ export default {
             this.message = res.data.message;
             this.snackbarB = true;
           });
-      }
+        }
+      });
     },
 
     close() {

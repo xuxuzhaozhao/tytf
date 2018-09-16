@@ -83,7 +83,7 @@
       </v-toolbar-title>
       
       <v-spacer></v-spacer>
-      <v-btn icon>
+      <v-btn icon @click="reload">
         <v-icon>notifications</v-icon>
       </v-btn>
       <v-btn icon large>
@@ -98,7 +98,7 @@
     </v-toolbar>
     <v-content>
       <keep-alive>
-        <router-view />
+        <router-view v-if="isRouterAlive"/>
       </keep-alive>
     </v-content>
   </v-app>
@@ -109,6 +109,7 @@
 export default {
   name: "Admin",
   data: () => ({
+    isRouterAlive:true,
     dialog: false,
     drawer: null,
     items: [
@@ -126,7 +127,11 @@ export default {
       this.$router.push({
         path: "/login"
       });
+    },
+    reload() {
+      this.$router.go(0)
     }
+
   }
 };
 </script>

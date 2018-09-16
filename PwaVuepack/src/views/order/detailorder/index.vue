@@ -169,7 +169,9 @@ export default {
             this.sumPrice = sum;
             this.indeterminate = false;
           } else {
-            alert(res.data.message);
+            this.color = "error";
+            this.message = res.data.message;
+            this.snackbarB = true;
           }
         });
     },
@@ -227,52 +229,67 @@ export default {
     deleteItem() {
       let item = this.editedItem;
       const index = this.menus.indexOf(item);
-      if (confirm("确定删除此菜品吗?")) {
-        this.menus.splice(index, 1);
-        this.$http
-          .delete(`${this.$domain}/api/BaseTable/DetailOrder/del/${item.Id}`)
-          .then(res => {
-            if (res.data.code === 20000) {
-              this.color = "success";
-            } else {
-              this.color = "error";
-            }
-            this.message = res.data.message;
-            this.snackbarB = true;
-          });
-      }
+      this.$confirm("确定删除此菜品吗?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回"
+      }).then(res => {
+        if (res) {
+          this.menus.splice(index, 1);
+          this.$http
+            .delete(`${this.$domain}/api/BaseTable/DetailOrder/del/${item.Id}`)
+            .then(res => {
+              if (res.data.code === 20000) {
+                this.color = "success";
+              } else {
+                this.color = "error";
+              }
+              this.message = res.data.message;
+              this.snackbarB = true;
+            });
+        }
+      });
     },
 
     submitBuy() {
-      if (confirm("买单后也能修改菜单，确定吗?")) {
-        this.$http
-          .get(`${this.$domain}/api/order/submitBuy/${this.orderId}`)
-          .then(res => {
-            if (res.data.code === 20000) {
-              this.color = "success";
-            } else {
-              this.color = "error";
-            }
-            this.message = res.data.message;
-            this.snackbarB = true;
-          });
-      }
+      this.$confirm("买单后也能修改菜单，确定吗?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回"
+      }).then(res => {
+        if (res) {
+          this.$http
+            .get(`${this.$domain}/api/order/submitBuy/${this.orderId}`)
+            .then(res => {
+              if (res.data.code === 20000) {
+                this.color = "success";
+              } else {
+                this.color = "error";
+              }
+              this.message = res.data.message;
+              this.snackbarB = true;
+            });
+        }
+      });
     },
 
     printMenu() {
-      if (confirm("确认打印此菜单吗，继续?")) {
-        this.$http
-          .get(`${this.$domain}/api/order/printMenu/${this.orderId}`)
-          .then(res => {
-            if (res.data.code === 20000) {
-              this.color = "success";
-            } else {
-              this.color = "error";
-            }
-            this.message = res.data.message;
-            this.snackbarB = true;
-          });
-      }
+      this.$confirm("确认打印此菜单吗，继续?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回"
+      }).then(res => {
+        if (res) {
+          this.$http
+            .get(`${this.$domain}/api/order/printMenu/${this.orderId}`)
+            .then(res => {
+              if (res.data.code === 20000) {
+                this.color = "success";
+              } else {
+                this.color = "error";
+              }
+              this.message = res.data.message;
+              this.snackbarB = true;
+            });
+        }
+      });
     }
   }
 };

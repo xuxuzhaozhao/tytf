@@ -11,9 +11,11 @@ import axios from 'axios'
 import 'vuetify/dist/vuetify.min.css'
 
 import VueAMap from 'vue-amap'
+import VuetifyConfirm from 'vuetify-confirm'
 
 Vue.use(Vuetify)
 Vue.use(VCharts)
+Vue.use(VuetifyConfirm)
 
 Vue.use(VueAMap)
 VueAMap.initAMapApiLoader({

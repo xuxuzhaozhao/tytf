@@ -24,13 +24,23 @@
           </v-container>
       </v-card>
     </v-flex>
+    <xsnackbar :color="color" 
+               :snackbar.sync="snackbarB" 
+               :text="message"/>
   </v-layout>
 </template>
 
 <script>
+import Xsnackbar from "@/components/snackbar";
 export default {
+  components: {
+    Xsnackbar
+  },
   data() {
     return {
+      color: "error",
+      message: "操作成功！",
+      snackbarB: false,
       show: false,
       user: {
         username: "",
@@ -42,13 +52,14 @@ export default {
     login() {
       this.$http.post(`${this.$domain}/api/User/login`, this.user).then(res => {
         if (res.data.code === 20000) {
-          this.$store.commit('login', res.data.data);
+          this.$store.commit("login", res.data.data);
           let redirect = decodeURIComponent(this.$route.query.redirect || "/");
           this.$router.push({
             path: redirect
           });
-        }else{
-          alert("用户名或密码错误！")
+        } else {
+          this.message = "用户名或密码错误！";
+          this.snackbarB = true;
         }
       });
     }
@@ -57,5 +68,4 @@ export default {
 </script>
 
 <style>
-
 </style>

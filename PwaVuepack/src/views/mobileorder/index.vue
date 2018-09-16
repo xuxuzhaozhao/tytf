@@ -8,9 +8,9 @@
                 vertical
             ></v-divider>
             <v-spacer></v-spacer>
-            <v-btn @click="reload">重置查询</v-btn>
+            <v-btn @click="reload">刷新</v-btn>
 
-            <v-btn @click="openquerydialog">选择查询</v-btn>
+            <v-btn @click="openquerydialog">查询</v-btn>
             
             <v-dialog v-model="querydialog" max-width="500px">
                 <v-card>
@@ -110,7 +110,7 @@
             >
                 <v-layout row wrap>
                 <v-flex xs12 v-for="item in orderList" :key="item.OrderId">
-                    <v-card :color="item.IsBuyed?'#56A36C':'#EF5350'" class="white--text">
+                    <v-card :color="item.IsBuyed?'#BDBDBD':'#E53935'" class="white--text">
                     <v-card-title primary-title>
                         <div>
                             <div class="headline">{{getdatetime(item.CreateTime)}} &nbsp;&nbsp; {{item.IsBuyed?'已买单':'未买单'}}</div>
@@ -122,8 +122,9 @@
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn :color="item.IsBuyed?'#7E884F':'#56A36C'" :disabled="item.IsBuyed" dark @click="submitBuy(item)">确认买单</v-btn>
-                        <v-btn :color="item.IsBuyed?'#2E68AA':'#2E68AA'" dark @click="openItem(item.OrderId)">修改订单</v-btn>
+                        <v-btn :color="'#FAFAFA'" v-if="item.IsBuyed" @click="submitBuy(item)">取消买单</v-btn>
+                        <v-btn :color="'#FAFAFA'" v-if="!item.IsBuyed" @click="submitBuy(item)">确认买单</v-btn>
+                        <v-btn :color="'#FAFAFA'"   @click="openItem(item.OrderId)">修改订单</v-btn>
                     </v-card-actions>
                     </v-card>
                 </v-flex>
@@ -250,7 +251,9 @@ export default {
 
             this.handlePage();
           } else {
-            alert(res.data.message);
+            this.color = "error";
+            this.message = res.data.message;
+            this.snackbarB = true;
           }
         })
         .catch(() => {
@@ -347,20 +350,25 @@ export default {
     },
 
     submitBuy(item) {
-      if (confirm("不要担心买单后也能通过后台修改菜单，确定吗?")) {
-        this.$http
-          .get(`${this.$domain}/api/order/submitBuy/${item.OrderId}`)
-          .then(res => {
-            if (res.data.code === 20000) {
-              this.color = "success";
-              item.IsBuyed = true;
-            } else {
-              this.color = "error";
-            }
-            this.message = res.data.message;
-            this.snackbarB = true;
-          });
-      }
+      this.$confirm("确定买单?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回" 
+      }).then(res => {
+        if (res) {
+          this.$http
+            .get(`${this.$domain}/api/order/submitBuy/${item.OrderId}`)
+            .then(res => {
+              if (res.data.code === 20000) {
+                this.color = "success";
+                item.IsBuyed = true;
+              } else {
+                this.color = "error";
+              }
+              this.message = res.data.message;
+              this.snackbarB = true;
+            });
+        }
+      });
     }
   }
 };

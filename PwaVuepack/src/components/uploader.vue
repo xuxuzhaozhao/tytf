@@ -24,10 +24,17 @@
             </div>
         </section>
         <input type="file" accept="image/*" @change="fileChanged" ref="file" multiple="multiple">
+        <xsnackbar :color="color" 
+               :snackbar.sync="snackbarB" 
+               :text="message"/>
     </div>
 </template>
 <script>
+import Xsnackbar from "@/components/snackbar";
 export default {
+  components: {
+    Xsnackbar
+  },
   props: {
     src: {
       type: String,
@@ -39,6 +46,9 @@ export default {
   },
   data() {
     return {
+      color: "success",
+      message: "操作成功！",
+      snackbarB: false,
       status: "ready",
       files: [],
       point: {},
@@ -73,7 +83,10 @@ export default {
         this.uploading = false;
         if (xhr.status === 200 || xhr.status === 304) {
           this.status = "finished";
-          alert("upload success!");
+
+          this.color = "error";
+          this.message = "上传成功！";
+          this.snackbarB = true;
         } else {
           console.log(`error：error code ${xhr.status}`);
         }

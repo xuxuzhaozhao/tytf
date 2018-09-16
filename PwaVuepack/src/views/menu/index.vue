@@ -275,7 +275,9 @@ export default {
             this.totalItems = res.data.data.count;
             this.pagination.totalItems = this.totalItems;
           } else {
-            alert(res.data.message);
+            this.color = "error";
+            this.message = res.data.message;
+            this.snackbarB = true;
           }
         });
     },
@@ -309,20 +311,25 @@ export default {
 
     deleteItem(item) {
       const index = this.desserts.indexOf(item);
-      if (confirm("确定删除此菜品吗?")) {
-        this.desserts.splice(index, 1);
-        this.$http
-          .delete(`${this.$domain}/api/BaseTable/Menu/del/${item.Id}`)
-          .then(res => {
-            if (res.data.code === 20000) {
-              this.color = "success";
-            } else {
-              this.color = "error";
-            }
-            this.message = res.data.message;
-            this.snackbarB = true;
-          });
-      }
+      this.$confirm("确定删除此菜品吗?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回"
+      }).then(res => {
+        if (res) {
+          this.desserts.splice(index, 1);
+          this.$http
+            .delete(`${this.$domain}/api/BaseTable/Menu/del/${item.Id}`)
+            .then(res => {
+              if (res.data.code === 20000) {
+                this.color = "success";
+              } else {
+                this.color = "error";
+              }
+              this.message = res.data.message;
+              this.snackbarB = true;
+            });
+        }
+      });
     },
 
     close() {
