@@ -84,10 +84,11 @@ export default {
         if (xhr.status === 200 || xhr.status === 304) {
           this.status = "finished";
 
-          this.color = "error";
           this.message = "上传成功！";
           this.snackbarB = true;
         } else {
+          this.color = "error";
+          this.message = "上传失败！";
           console.log(`error：error code ${xhr.status}`);
         }
       };

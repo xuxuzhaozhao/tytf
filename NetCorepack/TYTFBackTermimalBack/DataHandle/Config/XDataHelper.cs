@@ -34,22 +34,22 @@ namespace TYTFBackTermimalBack.DataHandle.Config
             }
         }
 
-        public static Tuple<IEnumerable<Vm_MenuClass>, IEnumerable<MenuTypeClass>> ExcuteMultipleReader(string sql, object obj = null)
+        public static Tuple<IEnumerable<T1>, IEnumerable<T2>> ExcuteMultipleReader<T1,T2>(string sql, object obj = null)
         {
-            IEnumerable<Vm_MenuClass> menuList = null;
-            IEnumerable<MenuTypeClass> typeList = null;
+            IEnumerable<T1> result1 = null;
+            IEnumerable<T2> result2 = null;
             using (var con = new MySqlConnection(XConfig.MySqlConnectionString))
             {
                 using (var multi = con.QueryMultiple(sql, obj))
                 {
                     if (!multi.IsConsumed)
                     {
-                        menuList = multi.Read<Vm_MenuClass>();
-                        typeList = multi.Read<MenuTypeClass>();
+                        result1 = multi.Read<T1>();
+                        result2 = multi.Read<T2>();
                     }
                 }
             }
-            return new Tuple<IEnumerable<Vm_MenuClass>, IEnumerable<MenuTypeClass>>(menuList, typeList);
+            return new Tuple<IEnumerable<T1>, IEnumerable<T2>>(result1, result2);
         }
 
         private void DapperTransaction(object param, params string[] query)
@@ -72,21 +72,5 @@ namespace TYTFBackTermimalBack.DataHandle.Config
                 }
             }
         }
-    }
-    public class Vm_MenuClass
-    {
-        public int Id { get; set; }
-        public string MenuTypeName { get; set; }
-        public string Name { get; set; }
-        public decimal Price { get; set; }
-        public string Description { get; set; }
-        public string RootUrl { get; set; }
-        public string ICon { get; set; }
-    }
-    public class MenuTypeClass
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Sort { get; set; }
     }
 }

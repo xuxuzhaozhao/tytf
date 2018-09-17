@@ -33,10 +33,10 @@ namespace TYTFBackTermimalBack.Api
             var urlPath = $"/menuupload/{file.FileName}";
             var fileName = _hostingEnvironment.WebRootPath + urlPath;
 
-            if (System.IO.File.Exists(fileName))
-            {
-                System.IO.File.Delete(fileName);
-            }
+            //if (System.IO.File.Exists(fileName))
+            //{
+            //    System.IO.File.Delete(fileName);
+            //}
 
             if (!Directory.Exists(_hostingEnvironment.WebRootPath + "/menuupload"))
             {
@@ -53,16 +53,16 @@ namespace TYTFBackTermimalBack.Api
             {
                 var originName = Path.GetFileNameWithoutExtension(fileName);
                 var ext = Path.GetExtension(fileName);
-                urlPath = $"/menuupload/{originName}_icon114{ext}";
+                urlPath = $"/menuupload/{DateTime.Now:yyyyMMddHHmmss}_{originName}_icon228{ext}";
 
                 var newFileName = $"{_hostingEnvironment.WebRootPath}{urlPath}";
 
-                if (System.IO.File.Exists(newFileName))
-                {
-                    System.IO.File.Delete(newFileName);
-                }
+                //if (System.IO.File.Exists(newFileName))
+                //{
+                //    System.IO.File.Delete(newFileName);
+                //}
 
-                image.Mutate(x => x.Resize(114, 114));
+                image.Mutate(x => x.Resize(228, 228));
                 image.Save($"{_hostingEnvironment.WebRootPath}{urlPath}");
             }
 

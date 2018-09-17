@@ -12,7 +12,7 @@
             <v-btn icon dark @click.native="close">
               <v-icon>close</v-icon>
             </v-btn>
-            <v-toolbar-title>订单详情</v-toolbar-title>
+            <v-toolbar-title>订单详情 - {{isBuyed?'已买单':'未买单'}}</v-toolbar-title>
           </v-toolbar>
           <v-progress-linear v-if="indeterminate" :indeterminate="indeterminate"></v-progress-linear>
           <v-card-text>
@@ -32,7 +32,7 @@
             </v-container>
           </v-card-text>
           <v-btn @click="addItemOpen"><v-icon>add</v-icon>添加菜品</v-btn>
-          <v-btn @click="submitBuy" color="success">确认买单</v-btn>
+          <!-- <v-btn @click="submitBuy" color="success">确认买单</v-btn> -->
           <v-btn @click="printMenu" color="primary">打印菜单</v-btn>
           <div style="flex: 1 1 auto;"></div>
         </v-card>
@@ -85,16 +85,18 @@
         :color="color" 
         :snackbar.sync="snackbarB" 
         :text="message"/>
+        <x-loading :loading='loading' message="正在传送菜单数据..." />
   </div>
 </template>
 
 <script>
+import XLoading from "@/components/loading";
 import Xsnackbar from "@/components/snackbar";
 export default {
-  props: ["detailDialog", "orderId"],
+  props: ["detailDialog", "orderId",'isBuyed'],
 
   components: {
-    Xsnackbar
+    Xsnackbar,XLoading
   },
 
   data() {
@@ -112,21 +114,7 @@ export default {
       indeterminate: false,
       selectItems: [],
       menus: [
-        // {
-        //   MenuName: "绍子鱼豆花",
-        //   SinglePrice: "SinglePrice",
-        //   Weight: 3
-        // },
-        // {
-        //   MenuName: "加多宝",
-        //   SinglePrice: "12",
-        //   Weight: 3
-        // },
-        // {
-        //   MenuName: "家常翘壳（黑龙滩水库）",
-        //   SinglePrice: "SinglePrice"
-        // }
-      ]
+      ],loading:false
     };
   },
 
@@ -250,35 +238,36 @@ export default {
       });
     },
 
-    submitBuy() {
-      this.$confirm("买单后也能修改菜单，确定吗?", {
-        buttonTrueText: "确定",
-        buttonFalseText: "返回"
-      }).then(res => {
-        if (res) {
-          this.$http
-            .get(`${this.$domain}/api/order/submitBuy/${this.orderId}`)
-            .then(res => {
-              if (res.data.code === 20000) {
-                this.color = "success";
-              } else {
-                this.color = "error";
-              }
-              this.message = res.data.message;
-              this.snackbarB = true;
-            });
-        }
-      });
-    },
+    // submitBuy() {
+    //   this.$confirm("买单后也能修改菜单，确定吗?", {
+    //     buttonTrueText: "确定",
+    //     buttonFalseText: "返回"
+    //   }).then(res => {
+    //     if (res) {
+    //       this.$http
+    //         .get(`${this.$domain}/api/order/submitBuy/${this.orderId}`)
+    //         .then(res => {
+    //           if (res.data.code === 20000) {
+    //             this.color = "success";
+    //           } else {
+    //             this.color = "error";
+    //           }
+    //           this.message = res.data.message;
+    //           this.snackbarB = true;
+    //         });
+    //     }
+    //   });
+    // },
 
     printMenu() {
-      this.$confirm("确认打印此菜单吗，继续?", {
+      this.$confirm(`${this.isBuyed?'订单已买单':'将打印此单据'}，是否继续打印?`, {
         buttonTrueText: "确定",
         buttonFalseText: "返回"
       }).then(res => {
         if (res) {
+            this.loading=true;
           this.$http
-            .get(`${this.$domain}/api/order/printMenu/${this.orderId}`)
+            .get(`${this.$domain}/api/Printer/PrintOrder/${this.orderId}`)
             .then(res => {
               if (res.data.code === 20000) {
                 this.color = "success";
@@ -287,6 +276,7 @@ export default {
               }
               this.message = res.data.message;
               this.snackbarB = true;
+              this.loading=false;
             });
         }
       });

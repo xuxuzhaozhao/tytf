@@ -20,7 +20,7 @@ namespace TYTFBackTermimalBack.Api
             string sql = @"SELECT * FROM VM_Menu WHERE IsUsed = 1 ORDER BY Sort;
                            SELECT * FROM MenuType ORDER BY Sort;";
 
-            var x = XDataHelper.ExcuteMultipleReader(sql);
+            var x = XDataHelper.ExcuteMultipleReader<Vm_MenuClass, MenuTypeClass>(sql);
 
             var goodsList = new List<Goods>();
             foreach (var item in x.Item2)
@@ -150,5 +150,22 @@ namespace TYTFBackTermimalBack.Api
         public decimal SinglePrice { get; set; }
         public int Weight { get; set; } = 1;
         public decimal ShouldPrice => SinglePrice * Weight;
+    }
+
+    public class Vm_MenuClass
+    {
+        public int Id { get; set; }
+        public string MenuTypeName { get; set; }
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string Description { get; set; }
+        public string RootUrl { get; set; }
+        public string ICon { get; set; }
+    }
+    public class MenuTypeClass
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Sort { get; set; }
     }
 }

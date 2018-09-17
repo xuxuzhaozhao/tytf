@@ -132,6 +132,22 @@ namespace TYTFBackTermimalBack.Api
             return xresult;
         }
 
+        [HttpGet, Route("NoBuy/{orderId}")]
+        public object NoBuy(string orderId)
+        {
+            string sql = $@"UPDATE TotalOrder SET 
+                                IsBuyed=0
+                            WHERE OrderId = @OrderId";
+
+            var xresult = new XResult();
+            if (!XDataHelper.ExcuteNonQuery(sql, new { orderId }))
+            {
+                xresult.code = 10000;
+                xresult.message = "操作失败！";
+            };
+            return xresult;
+        }
+
         [HttpDelete, Route("DeleteOrder/{orderId}")]
         public object DeleteOrder(string orderId)
         {

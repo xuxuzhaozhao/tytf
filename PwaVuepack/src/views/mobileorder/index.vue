@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-toolbar flat color="white">
+        <v-toolbar flat fixed color="white" style="margin-top:56px;">
             <v-toolbar-title>订单管理</v-toolbar-title>
             <v-divider
                 class="mx-2"
@@ -8,9 +8,9 @@
                 vertical
             ></v-divider>
             <v-spacer></v-spacer>
-            <v-btn @click="reload">刷新</v-btn>
+            <!-- <v-btn @click="reload">刷新</v-btn> -->
 
-            <v-btn @click="openquerydialog">查询</v-btn>
+            <v-btn color="primary" @click="openquerydialog">查询</v-btn>
             
             <v-dialog v-model="querydialog" max-width="500px">
                 <v-card>
@@ -103,6 +103,7 @@
                 </v-card>
             </v-dialog>
         </v-toolbar>
+        <div style="height:33px;"></div>
         <v-card>
             <v-container
                 fluid
@@ -118,13 +119,14 @@
                             <div>位置：{{item.PositionName}}。</div>
                             <div>应收款：<span style="font-weight:700;font-size:18px;">￥{{item.ShouldPrice}}</span> 元整</div>
                             <div>服务人员：{{item.WaiterName}}</div>
+                            <div v-if="item.Note!=null && item.Note!=''">备注：{{item.Note}}</div>
                         </div>
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn :color="'#FAFAFA'" v-if="item.IsBuyed" @click="submitBuy(item)">取消买单</v-btn>
+                        <v-btn :color="'#FAFAFA'" v-if="item.IsBuyed" @click="noBuy(item)">取消买单</v-btn>
                         <v-btn :color="'#FAFAFA'" v-if="!item.IsBuyed" @click="submitBuy(item)">确认买单</v-btn>
-                        <v-btn :color="'#FAFAFA'"   @click="openItem(item.OrderId)">修改订单</v-btn>
+                        <v-btn :color="'#FAFAFA'"   @click="openItem(item)">修改订单</v-btn>
                     </v-card-actions>
                     </v-card>
                 </v-flex>
@@ -146,7 +148,8 @@
         </v-card>
 
         <detail-order :detailDialog.sync="detailDialog"
-            :orderId="orderId"/>
+            :orderId="orderId"
+            :isBuyed="isBuyed"/>
 
         <xsnackbar :color="color" 
             :snackbar.sync="snackbarB" 
@@ -169,7 +172,7 @@ export default {
     return {
       loading: false,
       pagination: {
-        rowsPerPage: 8,
+        rowsPerPage: 12,
         descending: true,
         page: 1
       },
@@ -188,7 +191,8 @@ export default {
         { text: "未买单", value: false }
       ],
       frontButton: false,
-      nextButton: false
+      nextButton: false,
+      isBuyed:false,
     };
   },
   created() {
@@ -310,7 +314,7 @@ export default {
     reload() {
       this.pagination = {
         page: 1,
-        rowsPerPage: 8,
+        rowsPerPage: 12,
         descending: true
       };
       this.initialize();
@@ -344,15 +348,16 @@ export default {
       this.querydialog = true;
     },
 
-    openItem(orderId) {
-      this.orderId = orderId;
+    openItem(item) {
+      this.orderId = item.OrderId;
+      this.isBuyed = item.IsBuyed;
       this.detailDialog = true;
     },
 
     submitBuy(item) {
       this.$confirm("确定买单?", {
         buttonTrueText: "确定",
-        buttonFalseText: "返回" 
+        buttonFalseText: "返回"
       }).then(res => {
         if (res) {
           this.$http
@@ -361,6 +366,28 @@ export default {
               if (res.data.code === 20000) {
                 this.color = "success";
                 item.IsBuyed = true;
+              } else {
+                this.color = "error";
+              }
+              this.message = res.data.message;
+              this.snackbarB = true;
+            });
+        }
+      });
+    },
+
+    noBuy(item) {
+      this.$confirm("确定取消买单吗?", {
+        buttonTrueText: "确定",
+        buttonFalseText: "返回"
+      }).then(res => {
+        if (res) {
+          this.$http
+            .get(`${this.$domain}/api/order/NoBuy/${item.OrderId}`)
+            .then(res => {
+              if (res.data.code === 20000) {
+                this.color = "success";
+                item.IsBuyed = false;
               } else {
                 this.color = "error";
               }

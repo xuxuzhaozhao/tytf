@@ -84,7 +84,7 @@
       
       <v-spacer></v-spacer>
       <v-btn icon @click="reload">
-        <v-icon>notifications</v-icon>
+        <v-icon>cached</v-icon>
       </v-btn>
       <v-btn icon large>
         <v-avatar size="32px" tile>
@@ -96,9 +96,9 @@
       </v-btn>
       <v-btn @click="logout">退出登录</v-btn>
     </v-toolbar>
-    <v-content>
+    <v-content v-if="isRouterAlive">
       <keep-alive>
-        <router-view v-if="isRouterAlive"/>
+        <router-view />
       </keep-alive>
     </v-content>
   </v-app>
@@ -109,7 +109,7 @@
 export default {
   name: "Admin",
   data: () => ({
-    isRouterAlive:true,
+    isRouterAlive: true,
     dialog: false,
     drawer: null,
     items: [
@@ -129,9 +129,11 @@ export default {
       });
     },
     reload() {
-      this.$router.go(0)
+      this.isRouterAlive = false;
+      this.$nextTick(() => {
+        this.isRouterAlive = true;
+      });
     }
-
   }
 };
 </script>

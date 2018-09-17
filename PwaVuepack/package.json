@@ -17,6 +17,7 @@
     "vue-amap": "^0.5.8",
     "vue-router": "^3.0.1",
     "vuetify": "^1.0.0",
+    "vuetify-confirm": "^0.0.6",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
