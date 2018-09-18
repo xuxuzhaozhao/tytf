@@ -5,8 +5,7 @@
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
       fixed
-      app
-    >
+      app>
       <v-list dense>
         <template v-for="item in items">
           <v-layout
@@ -72,7 +71,8 @@
     </v-navigation-drawer>
     <v-toolbar
       :clipped-left="$vuetify.breakpoint.lgAndUp"
-      color="blue darken-3"
+      
+      :color="最上层导航条颜色"
       dark
       app
       fixed
@@ -109,18 +109,27 @@
 export default {
   name: "Admin",
   data: () => ({
+    最上层导航条颜色: "primary",
     isRouterAlive: true,
     dialog: false,
     drawer: null,
     items: [
-      { icon: "keyboard", text: "电脑端订单管理", link: "/admin/order" },
-      { icon: "keyboard", text: "移动端订单管理", link: "/admin/mobileorder" },
-      { icon: "add", text: "餐桌位置管理", link: "/admin/position" },
+      { icon: "airplay", text: "电脑端订单管理", link: "/admin/order" },
+      {
+        icon: "stay_current_portrait",
+        text: "移动端订单管理",
+        link: "/admin/mobileorder"
+      },
       { icon: "content_copy", text: "菜品种类管理", link: "/admin/menutype" },
       { icon: "history", text: "菜品管理", link: "/admin/menu" },
-      { icon: "contacts", text: "服务人员管理", link: "/admin/people" }
+      { icon: "add", text: "餐桌位置管理", link: "/admin/position" },
+      { icon: "contacts", text: "服务人员管理", link: "/admin/people" },
+      { icon: "settings", text: "系统设置", link: "/admin/setting" }
     ]
   }),
+  created() {
+    this.initializeSetting();
+  },
   methods: {
     logout() {
       this.$store.commit("logout");
@@ -133,6 +142,23 @@ export default {
       this.$nextTick(() => {
         this.isRouterAlive = true;
       });
+    },
+    initializeSetting() {
+      this.$http
+        .get(`${this.$domain}/api/BaseTable/TytfSetting/getlist`)
+        .then(res => {
+          if (res.data.code === 20000) {
+            res.data.data.forEach(item => {
+              switch (item.Name) {
+                case "最上层导航条颜色":
+                  this.最上层导航条颜色 = item.Value;
+                  break;
+              }
+            });
+          } else {
+            this.最上层导航条颜色 = "primary";
+          }
+        });
     }
   }
 };

@@ -8,6 +8,7 @@ import menu from '@/views/menu/index'
 import menuType from '@/views/menu/type'
 import people from '@/views/people/index'
 import position from '@/views/position/index'
+import setting from '@/views/setting/index'
 import Login from '@/views/login/index'
 import Admin from '@/views/admin/index'
 import Chart from "@/views/charts/index";
@@ -59,6 +60,11 @@ const router = new Router({
           path: '/admin/position',
           name: 'position',
           component: position
+        },
+        {
+          path: '/admin/setting',
+          name: 'setting',
+          component: setting
         }
       ]
     },

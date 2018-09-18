@@ -11,7 +11,7 @@
             <!-- <v-btn @click="reload">刷新</v-btn> -->
 
             <!-- <v-btn dark color="#E53935" @click="openquerydialog">未买单：{{5}}</v-btn> -->
-            <v-btn color="primary" @click="openquerydialog">查询</v-btn>
+            <v-btn :color="setting['移动端查询按钮颜色']" @click="openquerydialog">查询</v-btn>
             
             <v-dialog v-model="querydialog" max-width="500px">
                 <v-card>
@@ -112,7 +112,7 @@
             >
                 <v-layout row wrap>
                 <v-flex xs12 v-for="item in orderList" :key="item.OrderId">
-                    <v-card :color="item.IsBuyed?'#BDBDBD':'#E53935'" class="white--text">
+                    <v-card :color="item.IsBuyed?setting['已买单卡片颜色']:setting['未买单卡片颜色']" class="white--text">
                     <v-card-title primary-title>
                         <div>
                             <div class="headline">{{item.PositionName}}&nbsp;&nbsp;{{getdatetime(item.CreateTime)}}</div>
@@ -125,15 +125,15 @@
                     </v-card-title>
                     <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn :color="'#FAFAFA'" v-if="item.IsBuyed" @click="noBuy(item)">取消买单</v-btn>
-                        <v-btn :color="'#FAFAFA'" v-if="!item.IsBuyed" @click="submitBuy(item)">确认买单</v-btn>
-                        <v-btn :color="'#FAFAFA'"   @click="openItem(item)">菜单详情</v-btn>
+                        <v-btn :color="setting['取消买单按钮颜色']" v-if="item.IsBuyed" @click="noBuy(item)">取消买单</v-btn>
+                        <v-btn :color="setting['确认买单按钮颜色']" v-if="!item.IsBuyed" @click="submitBuy(item)">确认买单</v-btn>
+                        <v-btn :color="setting['菜单详情按钮颜色']"   @click="openItem(item)">菜单详情</v-btn>
                     </v-card-actions>
                     </v-card>
                 </v-flex>
                 </v-layout>
-                <v-btn v-if="frontButton" color="primary" @click="frontPage"><v-icon>chevron_left</v-icon>上一页</v-btn>
-                <v-btn v-if="nextButton" color="primary" @click="nextPage">下一页<v-icon>chevron_right</v-icon></v-btn>
+                <v-btn v-if="frontButton" :color="setting['移动端上一页按钮颜色']" @click="frontPage"><v-icon>chevron_left</v-icon>上一页</v-btn>
+                <v-btn v-if="nextButton" :color="setting['移动端下一页按钮颜色']" @click="nextPage">下一页<v-icon>chevron_right</v-icon></v-btn>
             </v-container>
             <v-btn
               fixed
@@ -141,7 +141,7 @@
               fab
               bottom
               right
-              color="primary"
+              :color="setting['移动端回到顶部按钮颜色']"
               @click="returnTop"
             >
               <v-icon>keyboard_arrow_up</v-icon>
@@ -193,10 +193,22 @@ export default {
       ],
       frontButton: false,
       nextButton: false,
-      isBuyed:false,
+      isBuyed: false,
+      setting: {
+        未买单卡片颜色: "primary",
+        已买单卡片颜色: "primary",
+        确认买单按钮颜色: "#FAFAFA",
+        取消买单按钮颜色: "#FAFAFA",
+        菜单详情按钮颜色: "#FAFAFA",
+        移动端查询按钮颜色: "primary",
+        移动端上一页按钮颜色: "primary",
+        移动端下一页按钮颜色: "primary",
+        移动端回到顶部按钮颜色: "primary"
+      }
     };
   },
   created() {
+    this.initializeSetting();
     this.initialize();
     this.getSelectList();
   },
@@ -229,19 +241,6 @@ export default {
       }
     }
   },
-  // computed: {
-  //   pages() {
-  //     if (
-  //       this.pagination.rowsPerPage == null ||
-  //       this.pagination.totalItems == null
-  //     )
-  //       return 0;
-
-  //     return Math.ceil(
-  //       this.pagination.totalItems / this.pagination.rowsPerPage
-  //     );
-  //   }
-  // },
   methods: {
     initialize() {
       this.loading = true;
@@ -263,6 +262,50 @@ export default {
         })
         .catch(() => {
           this.loading = false;
+        });
+    },
+
+    initializeSetting() {
+      this.$http
+        .get(`${this.$domain}/api/BaseTable/TytfSetting/getlist`)
+        .then(res => {
+          if (res.data.code === 20000) {
+            res.data.data.forEach(item => {
+              switch (item.Name) {
+                case "未买单卡片颜色":
+                  this.setting["未买单卡片颜色"] = item.Value;
+                  break;
+                case "已买单卡片颜色":
+                  this.setting["已买单卡片颜色"] = item.Value;
+                  break;
+                case "确认买单按钮颜色":
+                  this.setting["确认买单按钮颜色"] = item.Value;
+                  break;
+                case "取消买单按钮颜色":
+                  this.setting["取消买单按钮颜色"] = item.Value;
+                  break;
+                case "菜单详情按钮颜色":
+                  this.setting["菜单详情按钮颜色"] = item.Value;
+                  break;
+                case "移动端查询按钮颜色":
+                  this.setting["移动端查询按钮颜色"] = item.Value;
+                  break;
+                case "移动端上一页按钮颜色":
+                  this.setting["移动端上一页按钮颜色"] = item.Value;
+                  break;
+                case "移动端下一页按钮颜色":
+                  this.setting["移动端下一页按钮颜色"] = item.Value;
+                  break;
+                case "移动端回到顶部按钮颜色":
+                  this.setting["移动端回到顶部按钮颜色"] = item.Value;
+                  break;
+              }
+            });
+          } else {
+            this.color = "error";
+            this.message = "设置项初始化失败！";
+            this.snackbarB = true;
+          }
         });
     },
 
