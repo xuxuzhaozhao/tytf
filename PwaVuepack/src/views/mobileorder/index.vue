@@ -10,6 +10,7 @@
             <v-spacer></v-spacer>
             <!-- <v-btn @click="reload">刷新</v-btn> -->
 
+            <!-- <v-btn dark color="#E53935" @click="openquerydialog">未买单：{{5}}</v-btn> -->
             <v-btn color="primary" @click="openquerydialog">查询</v-btn>
             
             <v-dialog v-model="querydialog" max-width="500px">
@@ -114,9 +115,9 @@
                     <v-card :color="item.IsBuyed?'#BDBDBD':'#E53935'" class="white--text">
                     <v-card-title primary-title>
                         <div>
-                            <div class="headline">{{getdatetime(item.CreateTime)}} &nbsp;&nbsp; {{item.IsBuyed?'已买单':'未买单'}}</div>
+                            <div class="headline">{{item.PositionName}}&nbsp;&nbsp;{{getdatetime(item.CreateTime)}}</div>
                             <div> </div>
-                            <div>位置：{{item.PositionName}}。</div>
+                            <div>此订单：{{item.IsBuyed?'已买单':'未买单'}}</div>
                             <div>应收款：<span style="font-weight:700;font-size:18px;">￥{{item.ShouldPrice}}</span> 元整</div>
                             <div>服务人员：{{item.WaiterName}}</div>
                             <div v-if="item.Note!=null && item.Note!=''">备注：{{item.Note}}</div>
@@ -126,7 +127,7 @@
                         <v-spacer></v-spacer>
                         <v-btn :color="'#FAFAFA'" v-if="item.IsBuyed" @click="noBuy(item)">取消买单</v-btn>
                         <v-btn :color="'#FAFAFA'" v-if="!item.IsBuyed" @click="submitBuy(item)">确认买单</v-btn>
-                        <v-btn :color="'#FAFAFA'"   @click="openItem(item)">修改订单</v-btn>
+                        <v-btn :color="'#FAFAFA'"   @click="openItem(item)">菜单详情</v-btn>
                     </v-card-actions>
                     </v-card>
                 </v-flex>
