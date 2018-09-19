@@ -148,7 +148,9 @@
             </v-btn>
         </v-card>
 
-        <detail-order :detailDialog.sync="detailDialog"
+        <detail-order :detailDialog="detailDialog"
+            @modifiedPrice="modifiedPrice"
+            :detailItem="detailItem"
             :orderId="orderId"
             :isBuyed="isBuyed"/>
 
@@ -177,9 +179,11 @@ export default {
         descending: true,
         page: 1
       },
+      detailSumPrice: 0,
       orderList: [],
       querydialog: false,
       detailDialog: false,
+      detailItem: {},
       selectItems: [],
       menu2: false,
       menu3: false,
@@ -213,11 +217,6 @@ export default {
     this.getSelectList();
   },
   watch: {
-    detailDialog(val) {
-      if (!val) {
-        this.initialize();
-      }
-    },
     pagination: {
       handler() {
         this.initialize();
@@ -393,9 +392,19 @@ export default {
     },
 
     openItem(item) {
+      this.detailItem = item;
       this.orderId = item.OrderId;
       this.isBuyed = item.IsBuyed;
       this.detailDialog = true;
+    },
+
+    modifiedPrice(val) {
+      this.detailDialog = false;
+      this.orderList.forEach(order => {
+        if (order.OrderId == val.OrderId) {
+          order.ShouldPrice = val.ShouldPrice;
+        }
+      });
     },
 
     submitBuy(item) {

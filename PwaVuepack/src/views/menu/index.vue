@@ -56,29 +56,37 @@
           <v-card-text>
             <v-container grid-list-md>
               <v-layout wrap>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6 md6>
                   <v-text-field v-model="editedItem.Name" label="菜品名称"></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6 md6>
                   <v-select :items="selectItems"
                             item-text="name"
                             item-value="id"
                             label="选择菜品种类"
-                            solo
                             v-model="editedItem.MenuTypeId"
                           >
                   </v-select>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
-                  <v-text-field v-model="editedItem.Price" label="单价 (或每斤单价)"></v-text-field>
+                <v-flex xs12 sm6 md6>
+                  <v-text-field v-model="editedItem.Price" label="单价"></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6 md6>
+                  <v-select :items="priceTypes"
+                            item-text="text"
+                            item-value="value"
+                            label="计价单位"
+                            v-model="editedItem.PriceType"
+                          >
+                  </v-select>
+                </v-flex>
+                <v-flex xs12 sm6 md6>
                   <v-text-field v-model="editedItem.Description" label="简单描述"></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6 md6>
                   <v-text-field v-model="editedItem.Sort" label="排序"></v-text-field>
                 </v-flex>
-                <v-flex xs12 sm6 md4>
+                <v-flex xs12 sm6 md6>
                   <v-select :items="items"
                             item-text="text"
                             item-value="value"
@@ -120,6 +128,7 @@
         <td>{{ props.item.MenuTypeName }}</td>
         <td>{{ props.item.Name }}</td>
         <td>{{ props.item.Price }}</td>
+        <td>{{ props.item.PriceType }}</td>
         <td>{{ props.item.Description }}</td>
         <td>{{ props.item.Sort }}</td>
         <td>
@@ -187,6 +196,15 @@ export default {
     message: "操作成功！",
     snackbarB: false,
     items: [{ text: "启用", value: true }, { text: "停用", value: false }],
+    priceTypes: [
+      { text: "元/份", value: "元/份" },
+      { text: "元/斤", value: "元/斤" },
+      { text: "元/两", value: "元/两" },
+      { text: "元/瓶", value: "元/瓶" },
+      { text: "元/盒", value: "元/盒" },
+      { text: "元/箱", value: "元/箱" },
+      { text: "元/位", value: "元/位" }
+    ],
     dialog: false,
     querydialog: false,
     headers: [
@@ -198,7 +216,8 @@ export default {
         sortable: false,
         value: "Name"
       },
-      { text: "单价 (或每斤单价)", value: "Price", sortable: false },
+      { text: "单价", value: "Price", sortable: false },
+      { text: "计价单位", value: "PriceType", sortable: false },
       { text: "简单描述", value: "Description", sortable: false },
       { text: "排序", value: "Sort" },
       { text: "编辑", sortable: false },
@@ -210,10 +229,11 @@ export default {
     editedItem: {
       Name: "",
       MenuTypeName: 0,
-      Price: 0,
+      Price: "",
       Description: "",
-      icon: 0,
-      IsUsed: true
+      icon: "",
+      IsUsed: true,
+      PriceType: "元/份"
     },
     defaultItem: {
       Name: "",

@@ -93,7 +93,7 @@
 import XLoading from "@/components/loading";
 import Xsnackbar from "@/components/snackbar";
 export default {
-  props: ["detailDialog", "orderId",'isBuyed'],
+  props: ["detailDialog", "orderId",'isBuyed','detailItem'],
 
   components: {
     Xsnackbar,XLoading
@@ -114,7 +114,8 @@ export default {
       indeterminate: false,
       selectItems: [],
       menus: [
-      ],loading:false
+      ],loading:false,
+      detailItemS:{}
     };
   },
 
@@ -127,6 +128,16 @@ export default {
         this.initialize();
         this.getSelectList();
       }
+    },
+
+    detailItem(val){
+        this.detailItemS=val;
+    },
+
+    dialog(val){
+        if(!val){
+            this.$emit('modifiedPrice',this.detailItemS)
+        }
     },
 
     "editedItem.MenuId"(val) {
@@ -153,6 +164,7 @@ export default {
                 item.Weight = 1;
               }
               sum += item.SinglePrice * item.Weight;
+              this.detailItemS.ShouldPrice = sum;
             });
             this.sumPrice = sum;
             this.indeterminate = false;

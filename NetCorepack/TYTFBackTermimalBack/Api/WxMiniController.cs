@@ -36,6 +36,7 @@ namespace TYTFBackTermimalBack.Api
                         food.icon = menu.RootUrl + menu.ICon;
                         food.name = menu.Name;
                         food.price = menu.Price;
+                        food.pricetype = menu.PriceType;
                         food.description = menu.Description;
 
                         good.foods.Add(food);
@@ -128,6 +129,7 @@ namespace TYTFBackTermimalBack.Api
         public int id { get; set; }
         public string name { get; set; }
         public decimal price { get; set; }
+        public string pricetype { get; set; }
         public string description { get; set; }
         public int Count { get; set; } = 0;
         public string icon { get; set; }
@@ -158,6 +160,7 @@ namespace TYTFBackTermimalBack.Api
         public string MenuTypeName { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
+        public string PriceType { get; set; }
         public string Description { get; set; }
         public string RootUrl { get; set; }
         public string ICon { get; set; }

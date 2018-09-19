@@ -21,7 +21,7 @@ namespace TYTFBackTermimalBack.Api
             var selectSql = $@"select * from VM_Menu {page.GetWhereSql()}
                             ORDER BY MenuTypeId,Sort
                             LIMIT {(page.Page - 1) * page.RowsPerPage},{page.RowsPerPage}";
-            var countSql = $"SELECT COUNT(1) AS count FROM VM_Menu";
+            var countSql = $"SELECT COUNT(1) AS count FROM VM_Menu {page.GetWhereSql()}";
 
             var list = XDataHelper.ExcuteReader<object>(selectSql).ToList();
 
@@ -47,6 +47,7 @@ namespace TYTFBackTermimalBack.Api
                             MenuTypeId=@MenuTypeId,
                             IsUsed=@IsUsed, 
                             Price=@Price, 
+                            PriceType=@PriceType, 
                             Description=@Description,
                             IsUsed=@IsUsed, 
                             Sort=@Sort
@@ -54,8 +55,8 @@ namespace TYTFBackTermimalBack.Api
             }
             else
             {
-                sql = $@"INSERT INTO Menu(MenuTypeId, NAME, IsUsed,Price,Description,CreateTime,Sort) 
-                         VALUES(@MenuTypeId, @Name, @IsUsed,@Price,@Description,DATE_ADD(NOW(), INTERVAL 12 HOUR),@Sort)";
+                sql = $@"INSERT INTO Menu(MenuTypeId, NAME, IsUsed,Price,PriceType,Description,CreateTime,Sort) 
+                         VALUES(@MenuTypeId, @Name, @IsUsed,@Price,@PriceType,@Description,DATE_ADD(NOW(), INTERVAL 12 HOUR),@Sort)";
             }
 
             var xresult = new XResult();

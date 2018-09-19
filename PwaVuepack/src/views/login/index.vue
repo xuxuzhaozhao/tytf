@@ -1,33 +1,30 @@
-
-  <template>
-  <v-layout row>
-    <v-flex xs12 sm6 offset-sm3>
-      <v-card>
-        <v-card-media
-          src="/static/img/tytf.jpg"
-          height="200px"
-        >
-        </v-card-media>
-          <v-container>
-            <v-layout column>
-              <v-flex xl6 xs3 sm3>
-                <v-text-field solo label="Name" v-model="user.username"></v-text-field>
-              </v-flex>
-              <v-flex xl6 xs3 sm3>
-                <v-text-field type="password" solo-inverted label="Password" v-model="user.password"></v-text-field>
-              </v-flex>
-              <v-flex xl6 xs3 sm3>
-                <v-spacer></v-spacer>
-                <v-btn dark color="pink" @click="login">Login</v-btn>
-              </v-flex>
-            </v-layout>
-          </v-container>
-      </v-card>
-    </v-flex>
-    <xsnackbar :color="color" 
+<template>
+  <v-content style="margin-top:48%;">
+      <xsnackbar :color="color" 
                :snackbar.sync="snackbarB" 
                :text="message"/>
-  </v-layout>
+      <v-container fluid fill-height>
+        <v-layout align-center justify-center>
+          <v-flex xs12 sm8 md4>
+            <v-card class="elevation-12">
+              <v-toolbar dark color="primary">
+                <v-toolbar-title>田园天府 - 订单管理后台登录</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <v-form>
+                  <v-text-field prepend-icon="person" name="login" label="Login" type="text" v-model="user.username"></v-text-field>
+                  <v-text-field id="password" prepend-icon="lock" name="password" label="Password" type="password" v-model="user.password"></v-text-field>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn dark color="pink" @click="login">登录</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-flex>
+        </v-layout>
+      </v-container>
+    </v-content>
 </template>
 
 <script>
@@ -41,10 +38,9 @@ export default {
       color: "error",
       message: "操作成功！",
       snackbarB: false,
-      show: false,
       user: {
-        username: "",
-        password: ""
+        username: null,
+        password: null
       }
     };
   },

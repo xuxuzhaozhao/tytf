@@ -13,6 +13,7 @@ namespace TYTFBackTermimalBack.DataHandle.Data
         public bool IsUsed { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
+        public string PriceType { get; set; }
         public string Description { get; set; }
         public DateTime CreateTime { get; set; }
         public int Sort { get; set; }
