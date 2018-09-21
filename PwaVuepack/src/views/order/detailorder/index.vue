@@ -33,7 +33,27 @@
           </v-card-text>
           <v-btn @click="addItemOpen"><v-icon>add</v-icon>添加菜品</v-btn>
           <!-- <v-btn @click="submitBuy" color="success">确认买单</v-btn> -->
-          <v-btn @click="printMenu" color="primary">打印菜单</v-btn>
+          <v-btn @click="printMenu(0)" color="primary">打印菜单(三联)</v-btn>
+          <v-menu offset-y>
+            <v-btn
+                slot="activator"
+                color="primary"
+                dark
+                style="width:96.3%"
+            >
+                更多打印选项
+            </v-btn>
+            <v-list>
+                <v-list-tile
+                v-for="item in printitems"
+                :key="item.key"
+                @click="printMenu(item.key)"
+                >
+                <v-list-tile-title>{{ item.value }}</v-list-tile-title>
+                </v-list-tile>
+            </v-list>
+          </v-menu>
+          
           <div style="flex: 1 1 auto;"></div>
         </v-card>
       </v-dialog>
@@ -93,10 +113,11 @@
 import XLoading from "@/components/loading";
 import Xsnackbar from "@/components/snackbar";
 export default {
-  props: ["detailDialog", "orderId",'isBuyed','detailItem'],
+  props: ["detailDialog", "orderId", "isBuyed", "detailItem"],
 
   components: {
-    Xsnackbar,XLoading
+    Xsnackbar,
+    XLoading
   },
 
   data() {
@@ -113,9 +134,24 @@ export default {
       sumPrice: 0,
       indeterminate: false,
       selectItems: [],
-      menus: [
-      ],loading:false,
-      detailItemS:{}
+      menus: [],
+      loading: false,
+      detailItemS: {},
+      //'打印总订单（总台 留）','打印大厨房菜单','打印凉菜房菜单'
+      printitems: [
+        {
+          key: 1,
+          value: "打印总订单（总台 留）"
+        },
+        {
+          key: 2,
+          value: "打印大厨房菜单"
+        },
+        {
+          key: 3,
+          value: "打印凉菜房菜单"
+        }
+      ]
     };
   },
 
@@ -130,14 +166,14 @@ export default {
       }
     },
 
-    detailItem(val){
-        this.detailItemS=val;
+    detailItem(val) {
+      this.detailItemS = val;
     },
 
-    dialog(val){
-        if(!val){
-            this.$emit('modifiedPrice',this.detailItemS)
-        }
+    dialog(val) {
+      if (!val) {
+        this.$emit("modifiedPrice", this.detailItemS);
+      }
     },
 
     "editedItem.MenuId"(val) {
@@ -271,15 +307,32 @@ export default {
     //   });
     // },
 
-    printMenu() {
-      this.$confirm(`${this.isBuyed?'订单已买单':'将打印此单据'}，是否继续打印?`, {
+    printMenu(val) {
+        let ti ;
+        switch (val) {
+            case 0:
+                ti="将打印三联单";
+                break;
+            case 1:
+                ti="将打印总订单（总台 留）";
+                break;
+            case 2:
+                ti="将打印大厨房菜单";
+                break;
+            case 3:
+                ti="将打印凉菜房菜单";
+                break;
+        }
+      this.$confirm(`${this.isBuyed ? "订单已买单" : ti}，是否继续打印?`, {
         buttonTrueText: "确定",
         buttonFalseText: "返回"
       }).then(res => {
         if (res) {
-            this.loading=true;
+          this.loading = true;
           this.$http
-            .get(`${this.$domain}/api/Printer/PrintOrder/${this.orderId}`)
+            .get(
+              `${this.$domain}/api/Printer/PrintOrder/${this.orderId}/${val}`
+            )
             .then(res => {
               if (res.data.code === 20000) {
                 this.color = "success";
@@ -288,7 +341,7 @@ export default {
               }
               this.message = res.data.message;
               this.snackbarB = true;
-              this.loading=false;
+              this.loading = false;
             });
         }
       });

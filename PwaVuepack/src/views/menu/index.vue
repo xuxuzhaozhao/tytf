@@ -238,10 +238,11 @@ export default {
     defaultItem: {
       Name: "",
       MenuTypeName: 0,
-      Price: 0,
+      Price: "",
       Description: "",
-      icon: 0,
-      IsUsed: true
+      icon: "",
+      IsUsed: true,
+      PriceType: "元/份"
     },
     uploadDialog: false
   }),
@@ -383,6 +384,7 @@ export default {
     },
 
     openquerydialog() {
+      this.pagination.page = 1;
       this.pagination.MenuTypeId = null;
       this.pagination.MenuName = null;
       this.querydialog = true;
